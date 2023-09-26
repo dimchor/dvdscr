@@ -5,6 +5,7 @@
 #include "imgui-SFML.h" 
 
 #include "Picture.h"
+#include "Settings.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -22,8 +23,10 @@ int main(int argc, char** argv)
 
     ImGui::SFML::Init(window);
 
-    ds::Picture picture{"dvd.png", videoMode};
-    picture.setOffset({3.0f, 3.0f});
+    ds::Settings settings{};
+
+    ds::Picture picture{settings.imageFilename, videoMode};
+    picture.setOffset({settings.offset, settings.offset});
 
     sf::Clock deltaClock;
     while (window.isOpen()) 
@@ -45,7 +48,7 @@ int main(int argc, char** argv)
 
         ImGui::SFML::Update(window, deltaClock.restart());
 
-        ImGui::Begin("Hello, world!");
+        ImGui::Begin("Settings");
         ImGui::Button("Look at this pretty button");
         ImGui::End();
 
