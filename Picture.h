@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Exception.h"
+#include "Utilities.h"
 
 namespace ds
 {
@@ -35,6 +36,8 @@ private:
     sf::Texture _texture{};
     sf::Vector2f _offset{};
     sf::VideoMode _videoMode{};
+
+    void changeColour();
 };
 
 }

@@ -24,11 +24,13 @@ void Picture::update()
     {
         _sprite.setPosition({0.f, _sprite.getPosition().y});
         _offset.x = -_offset.x;
+        changeColour();
     }
     if (_sprite.getPosition().y < 0)
     {
         _sprite.setPosition({_sprite.getPosition().x, 0.f});
         _offset.y = -_offset.y;
+        changeColour();
     }
     if (_sprite.getPosition().x + _sprite.getGlobalBounds().width > 
         _videoMode.width)
@@ -36,6 +38,7 @@ void Picture::update()
         _sprite.setPosition(_videoMode.width - _sprite.getGlobalBounds().width,
              _sprite.getPosition().y);
         _offset.x = -_offset.x;
+        changeColour();
     }
     if (_sprite.getPosition().y + _sprite.getGlobalBounds().height > 
         _videoMode.height)
@@ -43,10 +46,17 @@ void Picture::update()
         _sprite.setPosition(_sprite.getPosition().x, 
             _videoMode.height - _sprite.getGlobalBounds().height);
         _offset.y = -_offset.y;
+        changeColour();
     }
     
-    
     _sprite.move(_offset);
+}
+
+void Picture::changeColour()
+{
+    _sprite.setColor(sf::Color(ds::random<unsigned char>(0, 255),
+                               ds::random<unsigned char>(0, 255), 
+                               ds::random<unsigned char>(0, 255)));
 }
 
 }
