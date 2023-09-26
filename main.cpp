@@ -8,30 +8,22 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <vector>
+#include <ctime>
 
 #include <SFML/Graphics.hpp>
 
 int main(int argc, char** argv) 
 {
-    std::vector<sf::VideoMode> const videoModes{
-        sf::VideoMode::getFullscreenModes()};
+    std::srand(std::time(nullptr));
+    sf::VideoMode videoMode{sf::VideoMode::getDesktopMode()};
 
-    if (videoModes.empty())
-    {
-        std::cerr << "No available fullscreen modes. Exiting...";
-        std::exit(EXIT_FAILURE);
-    }
-
-    sf::RenderWindow window{videoModes.front(), "dvdscr", 
-        sf::Style::Fullscreen};
+    sf::RenderWindow window{videoMode, "dvdscr", sf::Style::Fullscreen};
     window.setFramerateLimit(60);
 
     ImGui::SFML::Init(window);
 
-    ds::Picture picture{"dvd.png", videoModes.front()};
-    picture.setOffset({1.0f, 1.0f});
-
+    ds::Picture picture{"dvd.png", videoMode};
+    picture.setOffset({3.0f, 3.0f});
 
     sf::Clock deltaClock;
     while (window.isOpen()) 
@@ -41,7 +33,8 @@ int main(int argc, char** argv)
         {
             ImGui::SFML::ProcessEvent(window, event);
 
-            if (event.type == sf::Event::Closed) 
+            if (event.type == sf::Event::Closed
+                or sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) 
             {
                 window.close();
             }
