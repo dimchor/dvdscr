@@ -1,28 +1,54 @@
-#include "imgui.h" // necessary for ImGui::*, imgui-SFML.h doesn't include imgui.h
+// necessary for ImGui::*, imgui-SFML.h doesn't include imgui.h
+#include "imgui.h" 
 
-#include "imgui-SFML.h" // for ImGui::SFML::* functions and SFML-specific overloads
+// for ImGui::SFML::* functions and SFML-specific overloads
+#include "imgui-SFML.h" 
+
+#include "Picture.h"
+
+#include <iostream>
+#include <cstdlib>
+#include <vector>
 
 #include <SFML/Graphics.hpp>
 
-int main() {
-    sf::RenderWindow window(sf::VideoMode({640, 480}), "ImGui + SFML = <3");
+int main(int argc, char** argv) 
+{
+    std::vector<sf::VideoMode> const videoModes{
+        sf::VideoMode::getFullscreenModes()};
+
+    if (videoModes.empty())
+    {
+        std::cerr << "No available fullscreen modes. Exiting...";
+        std::exit(EXIT_FAILURE);
+    }
+
+    sf::RenderWindow window{videoModes.front(), "dvdscr", 
+        sf::Style::Fullscreen};
     window.setFramerateLimit(60);
-    //if (!ImGui::SFML::Init(window)) return -1;
+
     ImGui::SFML::Init(window);
 
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    ds::Picture picture{"dvd.png", videoModes.front()};
+    picture.setOffset({1.0f, 1.0f});
+
 
     sf::Clock deltaClock;
-    while (window.isOpen()) {
+    while (window.isOpen()) 
+    {
         sf::Event event{};
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event)) 
+        {
             ImGui::SFML::ProcessEvent(window, event);
 
-            if (event.type == sf::Event::Closed) {
+            if (event.type == sf::Event::Closed) 
+            {
                 window.close();
             }
+
         }
+
+        picture.update();
 
         ImGui::SFML::Update(window, deltaClock.restart());
 
@@ -31,7 +57,7 @@ int main() {
         ImGui::End();
 
         window.clear();
-        window.draw(shape);
+        window.draw(picture.getSprite());
         ImGui::SFML::Render(window);
         window.display();
     }
