@@ -12,6 +12,7 @@ Settings::Settings()
         return;
     }
 
+    imageFilename.resize(imageFilenameSize);
     ifs.read((char*)imageFilename.c_str(), imageFilename.size());
     ifs.read((char*)&offset, sizeof(float));
 
