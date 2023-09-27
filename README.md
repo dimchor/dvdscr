@@ -1,4 +1,4 @@
 # dvdscr
 
 ## Dependencies
-`sfml` and `imgui-sfml`, both of which can be obtained from the AUR.
+`sfml`, `imgui-sfml` and `thor-git`, all of which can be obtained from the AUR.

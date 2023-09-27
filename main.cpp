@@ -9,9 +9,14 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
+#include <cstring>
 #include <ctime>
 
 #include <SFML/Graphics.hpp>
+
+#include <Thor/Input/Action.hpp>
+#include <Thor/Input/ActionMap.hpp>
 
 int main(int argc, char** argv) 
 {
@@ -24,6 +29,12 @@ int main(int argc, char** argv)
     ImGui::SFML::Init(window);
 
     ds::Settings settings{};
+    thor::ActionMap<std::string> actionMap{};
+    actionMap["quit"] = thor::Action{sf::Keyboard::Escape, 
+        thor::Action::PressOnce};
+    actionMap["settings"] = thor::Action{
+                thor::Action{sf::Keyboard::LControl, thor::Action::Hold} && 
+                thor::Action{sf::Keyboard::O, thor::Action::ReleaseOnce}};
 
     ds::Picture picture{settings.imageFilename, videoMode};
     picture.setOffset({settings.offset, settings.offset});
@@ -31,15 +42,22 @@ int main(int argc, char** argv)
     sf::Clock deltaClock;
     while (window.isOpen()) 
     {
+        static bool settingsWindow{false};
+        actionMap.clearEvents();
         sf::Event event{};
         while (window.pollEvent(event)) 
-        {
+        {   
+            actionMap.pushEvent(event);
             ImGui::SFML::ProcessEvent(window, event);
 
-            if (event.type == sf::Event::Closed
-                or sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) 
+            if (actionMap.isActive("quit"))
             {
                 window.close();
+            }
+
+            if (actionMap.isActive("settings"))
+            {
+                settingsWindow = (settingsWindow ? false : true);
             }
 
         }
@@ -47,10 +65,23 @@ int main(int argc, char** argv)
         picture.update();
 
         ImGui::SFML::Update(window, deltaClock.restart());
+        if (settingsWindow)
+        {
+            ImGui::Begin("Settings");
+            ImGui::InputText("filename", settings.imageFilename.data(), 
+                settings.imageFilenameSize);
+            ImGui::SliderFloat("Speed", &settings.offset, 1.f, 10.f);
+            if (ImGui::Button("Apply"))
+            {
+                picture.updateTexture(settings.imageFilename);
+                auto offset{picture.getOffset()};
+                offset.x = (offset.x < 0 ? -settings.offset : settings.offset);
+                offset.y = (offset.y < 0 ? -settings.offset : settings.offset);
+                picture.setOffset(offset);
+            }
+            ImGui::End();
 
-        ImGui::Begin("Settings");
-        ImGui::Button("Look at this pretty button");
-        ImGui::End();
+        }
 
         window.clear();
         window.draw(picture.getSprite());

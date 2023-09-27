@@ -1,6 +1,6 @@
 SFML_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 IMGUI_FLAGS = -lImGui-SFML
-LFLAGS = $(SFML_FLAGS) $(IMGUI_FLAGS)
+LFLAGS = $(SFML_FLAGS) $(IMGUI_FLAGS) -lthor
 CFLAGS = -std=c++20
 
 output: main.o Picture.o Exception.o Utilities.o Settings.o
