@@ -3,6 +3,7 @@ An implementation of the all-time classic DVD screensaver. It's customisable,
 too, namely you can:
 - change the bouncing picture and
 - adjust the bouncing speed.
+
 To do this, press Ctrl + O. Click Apply to apply the changes. Press Ctrl + O to 
 hide the Settings window. Press Escape to exit the app.
 ## Dependencies
